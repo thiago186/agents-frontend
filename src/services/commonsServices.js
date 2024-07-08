@@ -1,5 +1,10 @@
 import api from "./api";
 
+export const isValidToken = () => {
+    console.info("TODO: IMPLEMMENT ISVALIDTOKEN")
+    return true;
+};
+
 export const getOrganizations = async () => {
     let userOrganizations = [];
     let response = await api.get('/commons/user-orgs');
@@ -12,7 +17,7 @@ export const getOrganizations = async () => {
         } else {
             throw new Error('User has no organizations');
         }
-        
+    
     } else {
         throw new Error('Error getting user organizations');
     }

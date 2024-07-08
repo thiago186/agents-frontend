@@ -1,52 +1,41 @@
+// context.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
 import { getOrganizations } from '../services/commonsServices';
 
-const OrganizationContext = createContext();
+export const OrgsContext = createContext();
 
-export const useOrganization = () => useContext(OrganizationContext);
+const OrganizationProvider = ({ children }) => {
+    const [organizations, setOrganizations] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-export const OrganizationProvider = ({ children }) => {
-  const [currentOrganization, setCurrentOrganization] = useState(null);
-  const [organizations, setOrganizations] = useState([]);
+    useEffect(() => {
+        const fetchOrgs = async () => {
+            try {
+                const orgs = await getOrganizations();
+                console.log("Response from getOrganizations:", orgs);
+                setOrganizations(orgs);
+                setIsLoading(false);
+                console.log("State organizations after setOrganizations:", orgs);
+                console.log('loading: ', false);
+            } catch (error) {
+                console.error("Erro ao buscar organizações:", error);
+                setIsLoading(false);
+                console.log('loading: ', false);
+            }
+        }
+        console.log('effect');
+        fetchOrgs();
+    }, []);
 
-  useEffect(() => {
-    fetchOrganizations();
-  }, []);
+    return (
+        <OrgsContext.Provider value={{ organizations, isLoading }}>
+            {children}
+        </OrgsContext.Provider>
+    );
+}
 
-  const fetchOrganizations = async () => {
-    try {
-      const orgs = await organizationService.getUserOrganizations();
-      setOrganizations(orgs);
-      if (orgs.length > 0 && !currentOrganization) {
-        setCurrentOrganization(orgs[0]);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar organizações:', error);
-    }
-  };
-
-  const changeCurrentOrganization = async (orgId) => {
-    const org = organizations.find(o => o.id === orgId);
-    if (org) {
-      try {
-        await organizationService.setCurrentOrganization(orgId);
-        setCurrentOrganization(org);
-      } catch (error) {
-        console.error('Erro ao mudar a organização atual:', error);
-      }
-    }
-  };
-
-  return (
-    <OrganizationContext.Provider 
-      value={{ 
-        currentOrganization, 
-        organizations, 
-        changeCurrentOrganization 
-      }}
-    >
-      {children}
-    </OrganizationContext.Provider>
-  );
+export function useOrganizationsContext() {
+    return useContext(OrgsContext);
 };
+
+export default OrganizationProvider;
