@@ -5,6 +5,7 @@ import { getOrganizations } from '../services/commonsServices';
 export const OrgsContext = createContext();
 
 const OrganizationProvider = ({ children }) => {
+    const [currOrganization, setCurrOrganization] = useState(null);
     const [organizations, setOrganizations] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -14,6 +15,10 @@ const OrganizationProvider = ({ children }) => {
                 const orgs = await getOrganizations();
                 console.log("Response from getOrganizations:", orgs);
                 setOrganizations(orgs);
+                
+                if (!currOrganization) {
+                    setCurrOrganization(organizations[0]);
+                }
                 setIsLoading(false);
                 console.log("State organizations after setOrganizations:", orgs);
                 console.log('loading: ', false);

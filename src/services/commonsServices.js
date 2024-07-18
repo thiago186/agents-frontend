@@ -12,6 +12,7 @@ export const isValidToken = async () => {
 
 export const getOrganizations = async () => {
     try {
+        console.log("Getting user organizations");
         let response = await api.get('/commons/user-orgs');
         if (response.status === 200) {
             let userOrganizations = response.data.organizations;

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { validateEmail, validatePassword } from '../utils/validation';
+import { Eye, EyeOff } from 'lucide-react';
+
 import './LoginForm.css';
 
 const LoginForm = ({ onSubmit, isLoading }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
@@ -35,13 +38,22 @@ const LoginForm = ({ onSubmit, isLoading }) => {
       </div>
       <div className="form-group">
         <label htmlFor="password">Senha</label>
+        <div className="password-input">
         <input
-          type="password"
+          type= {showPassword ? "text" : "password"}
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={isLoading}
         />
+        <button
+          type="button"
+          className="show-password"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <EyeOff /> : <Eye />}
+        </button>
+        </div>
         {errors.password && <p className="error-message">{errors.password}</p>}
       </div>
       <button type="submit" className="submit-button" disabled={isLoading}>
