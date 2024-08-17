@@ -11,29 +11,31 @@ const OrganizationProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchOrgs = async () => {
-            try {
+            try{
                 const orgs = await getOrganizations();
                 console.log("Response from getOrganizations:", orgs);
                 setOrganizations(orgs);
-                
-                if (!currOrganization) {
-                    setCurrOrganization(organizations[0]);
-                }
-                setIsLoading(false);
                 console.log("State organizations after setOrganizations:", orgs);
-                console.log('loading: ', false);
             } catch (error) {
                 console.error("Erro ao buscar organizações:", error);
-                setIsLoading(false);
-                console.log('loading: ', false);
             }
-        }
-        console.log('effect');
+        };
         fetchOrgs();
+        setIsLoading(false);
     }, []);
 
+    useEffect(() => {
+        if ((!currOrganization) && organizations.length > 0) {
+            console.log('orgs[0]', organizations[0]);
+            setCurrOrganization(organizations[0]);
+        }
+    }, [organizations]);
+
+    useEffect(() => console.log("currOrg changed: ", currOrganization), [currOrganization]);
+
+
     return (
-        <OrgsContext.Provider value={{ organizations, isLoading }}>
+        <OrgsContext.Provider value={{ organizations, isLoading, currOrganization }}>
             {children}
         </OrgsContext.Provider>
     );
